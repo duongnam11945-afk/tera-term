@@ -1,0 +1,36 @@
+; ====================================================================
+; CLEAR-ZTP OUT-OF-THE-BOX JUNIPER
+; ====================================================================
+pass = 'xxx'
+timeout = 15
+
+sendln ""
+mpause 500
+
+wait "root>" "root#"
+if result == 1 then
+    sendln "configure"
+    wait "root#"
+endif
+
+sendln "delete chassis auto-image-upgrade"
+wait "root#"
+
+sendln "delete interfaces irb unit 0 family inet dhcp"
+wait "root#"
+sendln "delete interfaces vme unit 0 family inet dhcp"
+wait "root#"
+
+sendln "set system root-authentication plain-text-password"
+wait "New password:"
+sendln pass
+wait "Retype new password:"
+sendln pass
+wait "root#"
+
+sendln "commit and-quit"
+wait "root>"
+
+; 7. Thông báo hoàn tất
+messagebox "DONE"
+end
