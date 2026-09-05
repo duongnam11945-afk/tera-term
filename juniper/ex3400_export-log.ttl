@@ -1,0 +1,77 @@
+pass = 'xxx'
+
+testlink
+if result = 0 then
+    connect '/C=4 /BAUD=9600'
+endif
+
+timeout = 30
+
+getdate datestr
+gettime timestr
+strcopy datestr 1 4 year
+strcopy datestr 6 2 month
+strcopy datestr 9 2 day
+strcopy timestr 1 2 hour
+strcopy timestr 4 2 min
+strcopy timestr 7 2 sec
+
+sprintf2 logfile 'C:\Users\hht.noc\Desktop\EX3400_Log_%s%s%s_%s%s%s.txt' year month day hour min sec
+
+sendln ''
+wait 'EX3400>' 'login:' '%'
+
+if result = 1 goto AT_CLI
+if result = 2 goto DO_LOGIN
+if result = 3 goto ENTER_CLI
+
+:DO_LOGIN
+sendln 'root'
+wait 'Password:'
+sendln pass
+wait '% ' 'EX3400>'
+if result = 1 goto ENTER_CLI
+if result = 2 goto AT_CLI
+
+:ENTER_CLI
+mpause 500
+sendln 'cli'
+wait 'EX3400>'
+goto AT_CLI
+
+:AT_CLI
+mpause 300
+sendln 'set cli screen-length 0'
+wait 'EX3400>'
+
+logopen logfile 0 0
+mpause 500
+
+sendln 'show system uptime'
+wait 'EX3400>'
+
+sendln 'show version'
+wait 'EX3400>'
+
+sendln 'show system alarms'
+wait 'EX3400>'
+
+sendln 'show chassis alarms'
+wait 'EX3400>'
+
+timeout = 0
+sendln 'show log messages | no-more'
+wait 'EX3400>'
+
+timeout = 30
+sendln 'set cli screen-length 24'
+wait 'EX3400>'
+
+mpause 1000
+logclose
+
+beep 1
+sprintf2 msg 'Done! Log saved to: %s' logfile
+messagebox msg 'Complete'
+
+end
