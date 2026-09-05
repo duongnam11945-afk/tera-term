@@ -16,7 +16,7 @@ strcopy timestr 1 2 hour
 strcopy timestr 4 2 min
 strcopy timestr 7 2 sec
 
-sprintf2 logfile 'C:\Users\hht.noc\Desktop\EX3400_Log_%s%s%s_%s%s%s.txt' year month day hour min sec
+sprintf2 logfile 'C:\Users\ABC\Desktop\EX3400_Log_%s%s%s_%s%s%s.txt' year month day hour min sec
 
 sendln ''
 wait 'EX3400>' 'login:' '%'
